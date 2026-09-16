@@ -3,16 +3,10 @@
     internal class Program
     {
         private static void Main()
-        {            
+        {
             bool isRunning = true;
             while (isRunning)
             {
-                List<string> questions = [];
-                List<int> answers = [];
-                List<string> diagnoses = [];
-                FillQuestions(questions);
-                FillAnswers(answers);
-                FillDiagnoses(diagnoses);
                 Console.WriteLine();
                 Console.WriteLine("Выберите пункт меню: ");
                 Console.WriteLine("1. Пройти тест.");
@@ -24,7 +18,7 @@
                     case "1":
                         Console.Clear();
                         Console.WriteLine("Вы выбрали пройти тест.");
-                        StartTest(questions, answers, diagnoses);
+                        StartTest();
                         break;
                     case "2":
                         Console.WriteLine("Вы выбрали выйти.");
@@ -33,77 +27,83 @@
                     default:
                         Console.WriteLine("Неверный выбор.");
                         break;
-                }                
-            }                                    
+                }
+            }
         }
 
-        private static void StartTest(List<string> questions, List<int> answers, List<string> diagnoses)
-        {                      
-
-            Console.WriteLine("Добрый день. Введите свое имя...");
-            string studentName = Console.ReadLine();
-            int correctAnswers = ConductTest(questions, answers);                        
-            Console.WriteLine(studentName + ", ваш диагноз: " + diagnoses[correctAnswers]);
-        }
-
-        private static int ConductTest(List<string> questions, List<int> answers)
+        private static void StartTest()
         {
+            string studentName = GetStudentName();
+            List<string> questions = GetQuestions();
+            List<int> testAnswers = GetAnswers();
             int questionNumber = 1;
-            int correctAnswers = 0;            
-            List<int> indices = [];
+            int correctAnswersCount = 0;
+            List<int> questionIndices = [];
+
             for (int i = 0; i < questions.Count; i++)
             {
-                indices.Add(i);
+                questionIndices.Add(i);
             }
+
             while (questionNumber <= questions.Count)
             {
-                int randomIndex = Random.Shared.Next(indices.Count);
-                int questionIndex = indices[randomIndex];
-
+                int randomIndex = Random.Shared.Next(questionIndices.Count);
+                int questionIndex = questionIndices[randomIndex];
                 Console.Write($"Вопрос № {questionNumber}: ");
                 Console.WriteLine(questions[questionIndex]);
-                int answer = GetValidInput();
-
-                if (answer == answers[questionIndex])
+                int studentAnswer = GetStudentAnswer();
+                if (studentAnswer == testAnswers[questionIndex])
                 {
-                    correctAnswers++;
+                    correctAnswersCount++;
                 }
                 questionNumber++;
-                indices.RemoveAt(randomIndex);
+                questionIndices.RemoveAt(randomIndex);
             }
-            return correctAnswers;
+
+            string diagnosis = GetDiagnoses(correctAnswersCount);
+            Console.WriteLine(studentName + ", ваш диагноз: " + diagnosis);
         }
 
-        private static void FillQuestions(List<string> questions)
-        {            
-            questions.Add("Сколько будет 2 плюс 2, умноженное на 2?");
-            questions.Add("Бревно нужно распилить на 10 частей. Сколько надо сделать распилов?");
-            questions.Add("На двух руках 10 пальцев. Сколько пальцев на 5 руках?");
-            questions.Add("Укол делают каждые полчаса. Сколько нужно минут для трех уколов?");
-            questions.Add("5 свечей горело, 2 потухли. Сколько свечей осталось?");            
-        }
-
-        private static void FillAnswers(List<int> answers)
-        {            
-            answers.Add(6);
-            answers.Add(9);
-            answers.Add(25);
-            answers.Add(60);
-            answers.Add(2);            
-        }
-
-        private static void FillDiagnoses(List<string> diagnoses)
+        private static List<string> GetQuestions()
         {
-            diagnoses.Add("Идиот");
-            diagnoses.Add("Кретин");
-            diagnoses.Add("Дурак");
-            diagnoses.Add("Нормальный");
-            diagnoses.Add("Талант");
-            diagnoses.Add("Гений");            
-        }              
-        
-        private static int GetValidInput()
-        {            
+            List<string> questions =
+            [
+                "Сколько будет 2 плюс 2, умноженное на 2?",
+                "Бревно нужно распилить на 10 частей. Сколько надо сделать распилов?",
+                "На двух руках 10 пальцев. Сколько пальцев на 5 руках?",
+                "Укол делают каждые полчаса. Сколько нужно минут для трех уколов?",
+                "5 свечей горело, 2 потухли. Сколько свечей осталось?",
+            ];
+            return questions;
+        }
+        private static string GetStudentName()
+        {
+            Console.WriteLine("Добрый день. Введите свое имя...");
+            string studentName = Console.ReadLine();
+            return studentName;
+        }
+        private static List<int> GetAnswers()
+        {
+            List<int> answers = [6, 9, 25, 60, 2];
+            return answers;
+        }
+
+        private static string GetDiagnoses(int correctAnswersCount)
+        {
+            List<string> diagnoses =
+            [
+                "Идиот",
+                "Кретин",
+                "Дурак",
+                "Нормальный",
+                "Талант",
+                "Гений",
+            ];
+            return diagnoses[correctAnswersCount];
+        }
+
+        private static int GetStudentAnswer()
+        {
             int answer = 0;
             while (true)
             {
