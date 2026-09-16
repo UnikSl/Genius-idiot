@@ -1,16 +1,18 @@
-﻿using System;
-using System.Diagnostics.Metrics;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace GeniusIdiotConsoleApp
+﻿namespace GeniusIdiotConsoleApp
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {            
             bool isRunning = true;
             while (isRunning)
             {
+                List<string> questions = [];
+                List<int> answers = [];
+                List<string> diagnoses = [];
+                GetQuestions(questions);
+                GetAnswers(answers);
+                GetDiagnoses(diagnoses);
                 Console.WriteLine();
                 Console.WriteLine("Выберите пункт меню: ");
                 Console.WriteLine("1. Пройти тест.");
@@ -22,7 +24,7 @@ namespace GeniusIdiotConsoleApp
                     case "1":
                         Console.Clear();
                         Console.WriteLine("Вы выбрали пройти тест.");
-                        Test();
+                        StartTest(questions, answers, diagnoses);
                         break;
                     case "2":
                         Console.WriteLine("Вы выбрали выйти.");
@@ -35,77 +37,28 @@ namespace GeniusIdiotConsoleApp
             }                                    
         }
 
-        static void Test()
-        {
-            // Договариваемся что индекс вопроса и индекс овтета на него совпадают 
-            // 1. Создаем переменную колличество вопросов и ответов
-            int countQA = 5;
-            int countDiagnoses = 6;
-
-            // 2. Получение массивов с Вопросами, Ответами, Диагнозами
-            string[] questions = GetQuestions(countQA);
-            int[] answers = GetAnswers(countQA);
-            string[] diagnoses = GetDiagnoses(countDiagnoses);
+        private static void StartTest(List<string> questions, List<int> answers, List<string> diagnoses)
+        {                      
 
             Console.WriteLine("Добрый день. Введите свое имя...");
-            string nameStudent = Console.ReadLine();
-
-            // 3. Получаем колличество правильных ответов
-            int correctAnswers = RunTest(questions, answers);
-
-            // 4. Вывод диагноза 
-            Console.WriteLine(nameStudent + ", ваш диагноз: " + diagnoses[correctAnswers]);
-        }
-        // 1.1 Создание вопросов
-        static string[] GetQuestions(int questionsCounts)
-        {
-            string[] questions = new string[questionsCounts];
-            questions[0] = "Сколько будет 2 плюс 2, умноженное на 2?";
-            questions[1] = "Бревно нужно распилить на 10 частей. Сколько надо сделать распилов?";
-            questions[2] = "На двух руках 10 пальцев. Сколько пальцев на 5 руках?";
-            questions[3] = "Укол делают каждые полчаса. Сколько нужно минут для трех уколов?";
-            questions[4] = "5 свечей горело, 2 потухли. Сколько свечей осталось?";
-            return questions;
-        }
-        // 1.2 Созадние овтетов
-        static int[] GetAnswers(int answersCounts)
-        {
-            int[] answers = new int[answersCounts];
-            answers[0] = 6;
-            answers[1] = 9;
-            answers[2] = 25;
-            answers[3] = 60;
-            answers[4] = 2;
-            return answers;
-        }
-        // 1.3 Создание диагнозов
-        static string[] GetDiagnoses(int countDiagnoses)
-        {
-            string[] diagnoses = new string[countDiagnoses];
-            diagnoses[0] = "Идиот";
-            diagnoses[1] = "Кретин";
-            diagnoses[2] = "Дурак";
-            diagnoses[3] = "Нормальный";
-            diagnoses[4] = "Талант";
-            diagnoses[5] = "Гений";
-            return diagnoses;
+            string studentName = Console.ReadLine();
+            int correctAnswers = ConductTest(questions, answers);                        
+            Console.WriteLine(studentName + ", ваш диагноз: " + diagnoses[correctAnswers]);
         }
 
-        // 3.1 Вопрос -> ответ -> проверка -> счетчик
-        static int RunTest(string[] questions, int[] answers)
+        private static int ConductTest(List<string> questions, List<int> answers)
         {
-            int i=1;
-            int correctAnswers = 0; // Счетчик правильных ответов
-            List<int> indices = new List<int> { 0, 1, 2, 3, 4 };
-            Random rand = new Random();
-            while (i <= questions.Length)
-            {                               
-                int randomIndex = rand.Next(indices.Count); // Получаем случайную позицию (индекс) от 0 до длины списка
-                int randomElement = indices[randomIndex]; // Берем значение, которое лежит на этой позиции
+            int i = 1;
+            int correctAnswers = 0;
+            List<int> indices = [0, 1, 2, 3, 4];
+            while (i <= questions.Count)
+            {
+                int randomIndex = Random.Shared.Next(indices.Count);
+                int randomElement = indices[randomIndex];
 
                 Console.Write($"Вопрос № {i}: ");
                 Console.WriteLine(questions[randomElement]);
-                int answer = TryAnswer();
+                int answer = GetValidInput();
 
                 if (answer == answers[randomElement])
                 {
@@ -116,8 +69,36 @@ namespace GeniusIdiotConsoleApp
             }
             return correctAnswers;
         }
-        // Проверка ввода ответа
-        static int TryAnswer()
+
+        private static void GetQuestions(List<string> questions)
+        {            
+            questions.Add("Сколько будет 2 плюс 2, умноженное на 2?");
+            questions.Add("Бревно нужно распилить на 10 частей. Сколько надо сделать распилов?");
+            questions.Add("На двух руках 10 пальцев. Сколько пальцев на 5 руках?");
+            questions.Add("Укол делают каждые полчаса. Сколько нужно минут для трех уколов?");
+            questions.Add("5 свечей горело, 2 потухли. Сколько свечей осталось?");            
+        }
+
+        private static void GetAnswers(List<int> answers)
+        {            
+            answers.Add(6);
+            answers.Add(9);
+            answers.Add(25);
+            answers.Add(60);
+            answers.Add(2);            
+        }
+
+        private static void GetDiagnoses(List<string> diagnoses)
+        {
+            diagnoses.Add("Идиот");
+            diagnoses.Add("Кретин");
+            diagnoses.Add("Дурак");
+            diagnoses.Add("Нормальный");
+            diagnoses.Add("Талант");
+            diagnoses.Add("Гений");            
+        }              
+        
+        private static int GetValidInput()
         {            
             int answer = 0;
             while (true)
