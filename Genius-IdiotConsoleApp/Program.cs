@@ -2,7 +2,7 @@
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {            
             bool isRunning = true;
             while (isRunning)
@@ -10,9 +10,9 @@
                 List<string> questions = [];
                 List<int> answers = [];
                 List<string> diagnoses = [];
-                GetQuestions(questions);
-                GetAnswers(answers);
-                GetDiagnoses(diagnoses);
+                FillQuestions(questions);
+                FillAnswers(answers);
+                FillDiagnoses(diagnoses);
                 Console.WriteLine();
                 Console.WriteLine("Выберите пункт меню: ");
                 Console.WriteLine("1. Пройти тест.");
@@ -48,29 +48,33 @@
 
         private static int ConductTest(List<string> questions, List<int> answers)
         {
-            int i = 1;
-            int correctAnswers = 0;
-            List<int> indices = [0, 1, 2, 3, 4];
-            while (i <= questions.Count)
+            int questionNumber = 1;
+            int correctAnswers = 0;            
+            List<int> indices = [];
+            for (int i = 0; i < questions.Count; i++)
+            {
+                indices.Add(i);
+            }
+            while (questionNumber <= questions.Count)
             {
                 int randomIndex = Random.Shared.Next(indices.Count);
-                int randomElement = indices[randomIndex];
+                int questionIndex = indices[randomIndex];
 
-                Console.Write($"Вопрос № {i}: ");
-                Console.WriteLine(questions[randomElement]);
+                Console.Write($"Вопрос № {questionNumber}: ");
+                Console.WriteLine(questions[questionIndex]);
                 int answer = GetValidInput();
 
-                if (answer == answers[randomElement])
+                if (answer == answers[questionIndex])
                 {
                     correctAnswers++;
                 }
-                i++;
+                questionNumber++;
                 indices.RemoveAt(randomIndex);
             }
             return correctAnswers;
         }
 
-        private static void GetQuestions(List<string> questions)
+        private static void FillQuestions(List<string> questions)
         {            
             questions.Add("Сколько будет 2 плюс 2, умноженное на 2?");
             questions.Add("Бревно нужно распилить на 10 частей. Сколько надо сделать распилов?");
@@ -79,7 +83,7 @@
             questions.Add("5 свечей горело, 2 потухли. Сколько свечей осталось?");            
         }
 
-        private static void GetAnswers(List<int> answers)
+        private static void FillAnswers(List<int> answers)
         {            
             answers.Add(6);
             answers.Add(9);
@@ -88,7 +92,7 @@
             answers.Add(2);            
         }
 
-        private static void GetDiagnoses(List<string> diagnoses)
+        private static void FillDiagnoses(List<string> diagnoses)
         {
             diagnoses.Add("Идиот");
             diagnoses.Add("Кретин");
@@ -116,6 +120,5 @@
             }
             return answer;
         }
-
     }
 }
