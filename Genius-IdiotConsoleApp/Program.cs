@@ -6,9 +6,13 @@
         {
             List<string> questions = GetQuestions();
             List<int> testAnswers = GetAnswers();
-            bool isRunning = true;
-            while (isRunning)
-            {                
+            ShowMainMenu(questions, testAnswers);
+        }
+
+        static void ShowMainMenu(List<string> questions, List<int> testAnswers)
+        {
+            while (true)
+            {
                 Console.WriteLine();
                 Console.WriteLine("Выберите пункт меню: ");
                 Console.WriteLine("1. Пройти тест.");
@@ -25,8 +29,7 @@
                         break;
                     case "2":
                         Console.WriteLine("Вы выбрали выйти.");
-                        isRunning = false;
-                        break;
+                        return;
                     case "3":
                         Console.Clear();
                         Console.WriteLine("Вы выбрали Режим преподавателя.");
@@ -38,8 +41,11 @@
                 }
             }
         }
-
-        private static void StartTest(List<string> questions, List<int> testAnswers)
+        static void ShowTeacherMenu()
+        {
+            
+        }
+        private static void StartTest(List<string> questions, List<int> answers)
         {
             string studentName = GetStudentName();
             int questionNumber = 1;
@@ -58,7 +64,7 @@
                 Console.Write($"Вопрос № {questionNumber}: ");
                 Console.WriteLine(questions[questionIndex]);
                 int studentAnswer = GetStudentAnswer();
-                if (studentAnswer == testAnswers[questionIndex])
+                if (studentAnswer == answers[questionIndex])
                 {
                     correctAnswersCount++;
                 }
@@ -72,7 +78,7 @@
 
         private static List<string> GetQuestions()
         {
-            List<string> questions =
+            return
             [
                 "Сколько будет 2 плюс 2, умноженное на 2?",
                 "Бревно нужно распилить на 10 частей. Сколько надо сделать распилов?",
@@ -80,18 +86,16 @@
                 "Укол делают каждые полчаса. Сколько нужно минут для трех уколов?",
                 "5 свечей горело, 2 потухли. Сколько свечей осталось?",
             ];
-            return questions;
         }
         private static string GetStudentName()
         {
             Console.WriteLine("Добрый день. Введите свое имя...");
-            string studentName = Console.ReadLine();
-            return studentName;
+            string name = Console.ReadLine();
+            return name;
         }
         private static List<int> GetAnswers()
         {
-            List<int> testAnswers = [6, 9, 25, 60, 2];
-            return testAnswers;
+            return [6, 9, 25, 60, 2];            
         }
 
         private static string GetDiagnosis(int correctAnswersCount)
@@ -109,22 +113,20 @@
         }
 
         private static int GetStudentAnswer()
-        {
-            int studentAnswer = 0;
+        {            
             while (true)
             {
-                string inputAnswer = Console.ReadLine();
-                if (int.TryParse(inputAnswer, out studentAnswer))
+                string input = Console.ReadLine();
+                if (int.TryParse(input, out int answer))
                 {
-                    Console.WriteLine($"Ваш ответ {studentAnswer}");
-                    break;
+                    Console.WriteLine($"Ваш ответ {answer}");
+                    return answer;
                 }
-                else
-                {
-                    Console.WriteLine("Вы ввели не число");
-                }
+                
+                Console.WriteLine("Вы ввели не число");
+                
             }
-            return studentAnswer;
+            
         }
 
         private static void TeacherMode(List<string> questions, List<int> testAnswers)
@@ -133,8 +135,7 @@
             {
                 return;
             }
-            bool isRunning = true;
-            while (isRunning)
+            while (true)
             {
                 Console.WriteLine();
                 Console.WriteLine("Выберите пункт меню: ");
@@ -146,16 +147,15 @@
                 {
                     case "1":
                         Console.WriteLine("Вы решили просмотреть вопросы и ответы:");
-                        DisplayQuestionsAndAnswers(questions, testAnswers);
+                        DisplayQuestionsAnswers(questions, testAnswers);
                         break;
                     case "2":
                         Console.WriteLine("Вы решили изменить вопрос или ответ.");
-                        ChangeQuestionAndAnswer(questions, testAnswers);
+                        ChangeQuestionAnswer(questions, testAnswers);
                         break;
                     case "3":
                         Console.WriteLine("Выход из режима преподавателя.");
-                        isRunning = false;
-                        break;
+                        return;
                     default:
                         Console.WriteLine("Неверный выбор.");
                         break;
@@ -170,12 +170,12 @@
             {
                 Console.WriteLine("Добро пожаловать в Режим преподавателя!");
                 return true;
-                
-            }            
-            Console.WriteLine("Неверный пароль."); 
+
+            }
+            Console.WriteLine("Неверный пароль.");
             return false;
         }
-        private static void DisplayQuestionsAndAnswers(List<string> questions, List<int> testAnswers)
+        private static void DisplayQuestionsAnswers(List<string> questions, List<int> testAnswers)
         {
             Console.WriteLine("Вопросы и ответы:");
             for (int i = 0; i < questions.Count; i++)
@@ -183,9 +183,9 @@
                 Console.WriteLine($"Вопрос {i + 1}: {questions[i]} - Ответ: {testAnswers[i]}");
             }
         }
-        private static void ChangeQuestionAndAnswer(List<string> questions, List<int> testAnswers)
+        private static void ChangeQuestionAnswer(List<string> questions, List<int> testAnswers)
         {
-            DisplayQuestionsAndAnswers(questions, testAnswers);
+            DisplayQuestionsAnswers(questions, testAnswers);
             Console.WriteLine("Введите номер вопроса, который хотите изменить: ");
             while (true)
             {
