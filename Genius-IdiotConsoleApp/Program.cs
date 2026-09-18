@@ -3,21 +3,12 @@
     internal class Program
     {
         private static void Main()
-        {
+        {            
             List<string> questions = GetQuestions();
             List<int> testAnswers = GetAnswers();
-            ShowMainMenu(questions, testAnswers);
-        }
-
-        static void ShowMainMenu(List<string> questions, List<int> testAnswers)
-        {
             while (true)
             {
-                Console.WriteLine();
-                Console.WriteLine("Выберите пункт меню: ");
-                Console.WriteLine("1. Пройти тест.");
-                Console.WriteLine("2. Выйти");
-                Console.WriteLine("3. Режим преподавателя.");
+                ShowMainMenu();
                 var choice = Console.ReadLine();
 
                 switch (choice)
@@ -41,10 +32,16 @@
                 }
             }
         }
-        static void ShowTeacherMenu()
+
+        private static void ShowMainMenu()
         {
-            
+            Console.WriteLine();
+            Console.WriteLine("Выберите пункт меню: ");
+            Console.WriteLine("1. Пройти тест.");
+            Console.WriteLine("2. Выйти");
+            Console.WriteLine("3. Режим преподавателя.");
         }
+        
         private static void StartTest(List<string> questions, List<int> answers)
         {
             string studentName = GetStudentName();
@@ -135,23 +132,20 @@
             {
                 return;
             }
+            
             while (true)
             {
-                Console.WriteLine();
-                Console.WriteLine("Выберите пункт меню: ");
-                Console.WriteLine("1. Просмотреть вопросы и ответы.");
-                Console.WriteLine("2. Изменить вопрос или ответ.");
-                Console.WriteLine("3. Выйти из режима преподавателя.");
+                ShowTeacherMenu();
                 var choice = Console.ReadLine();
                 switch (choice)
                 {
                     case "1":
                         Console.WriteLine("Вы решили просмотреть вопросы и ответы:");
-                        DisplayQuestionsAnswers(questions, testAnswers);
+                        DisplayTestData(questions, testAnswers);
                         break;
                     case "2":
-                        Console.WriteLine("Вы решили изменить вопрос или ответ.");
-                        ChangeQuestionAnswer(questions, testAnswers);
+                        Console.WriteLine("Вы решили изменить данные теста.");
+                        ChangeTestData(questions, testAnswers);
                         break;
                     case "3":
                         Console.WriteLine("Выход из режима преподавателя.");
@@ -161,6 +155,14 @@
                         break;
                 }
             }
+        }
+        private static void ShowTeacherMenu()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Выберите пункт меню: ");
+            Console.WriteLine("1. Просмотреть вопросы и ответы.");
+            Console.WriteLine("2. Изменить данные теста.");
+            Console.WriteLine("3. Выйти из режима преподавателя.");
         }
         private static bool TeacherLogin()
         {
@@ -175,7 +177,7 @@
             Console.WriteLine("Неверный пароль.");
             return false;
         }
-        private static void DisplayQuestionsAnswers(List<string> questions, List<int> testAnswers)
+        private static void DisplayTestData(List<string> questions, List<int> testAnswers)
         {
             Console.WriteLine("Вопросы и ответы:");
             for (int i = 0; i < questions.Count; i++)
@@ -183,9 +185,9 @@
                 Console.WriteLine($"Вопрос {i + 1}: {questions[i]} - Ответ: {testAnswers[i]}");
             }
         }
-        private static void ChangeQuestionAnswer(List<string> questions, List<int> testAnswers)
+        private static void ChangeTestData(List<string> questions, List<int> testAnswers)
         {
-            DisplayQuestionsAnswers(questions, testAnswers);
+            DisplayTestData(questions, testAnswers);
             Console.WriteLine("Введите номер вопроса, который хотите изменить: ");
             while (true)
             {
@@ -205,17 +207,11 @@
                             Console.WriteLine("Вопрос и ответ успешно изменены.");
                             break;
                         }
-                        else
-                        {
-                            Console.WriteLine("Ошибка ввода");
-                        }
+                        Console.WriteLine("Ошибка ввода");                        
                     }
                     break;
                 }
-                else
-                {
-                    Console.WriteLine("Вы ввели не число");
-                }
+                Console.WriteLine("Некорректный номер вопроса. Попробуйте ещё раз.");                
             }
 
         }
